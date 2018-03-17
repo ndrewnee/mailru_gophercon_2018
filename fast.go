@@ -35,8 +35,9 @@ func Fast(in io.Reader, out io.Writer, networks []string) {
 
 	parsedNets := parseNetworks(networks)
 
+	dec := json.NewDecoder(in)
 	for idx := 1; true; idx++ {
-		err = json.NewDecoder(in).Decode(&user)
+		err = dec.Decode(&user)
 		if err != nil {
 			if err == io.EOF {
 				out.Write([]byte("Total: " + strconv.Itoa(total) + "\n"))

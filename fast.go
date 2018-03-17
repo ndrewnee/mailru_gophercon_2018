@@ -66,8 +66,10 @@ func Fast(in io.Reader, out io.Writer, networks []string) {
 
 func parseNetworks(networks []string) []*net.IPNet {
 	nets := make([]*net.IPNet, len(networks))
+	var err error
+	var ipv4Net *net.IPNet
 	for i := range networks {
-		_, ipv4Net, err := net.ParseCIDR(networks[i])
+		_, ipv4Net, err = net.ParseCIDR(networks[i])
 		if err != nil {
 			panic(err)
 		}
@@ -104,22 +106,32 @@ func hasMoreThan3IPs(networks []*net.IPNet, hits []string) bool {
 
 func hasValidBrowser(browsers []string) bool {
 	var ok bool
+	var count int
 	for i := range browsers {
 		ok = strings.Contains(browsers[i], "Chrome/60.0.3112.90")
 		if ok {
-			return true
+			count++
+			if count >= 3 {
+				return true
+			}
 		}
 
 		ok = strings.Contains(browsers[i], "Chrome/52.0.2743.116")
 		if ok {
-			return true
+			count++
+			if count >= 3 {
+				return true
+			}
 		}
 
 		ok = strings.Contains(browsers[i], "Chrome/57.0.2987.133")
 		if ok {
-			return true
+			count++
+			if count >= 3 {
+				return true
+			}
 		}
 	}
 
-	return false
+	return count >= 3
 }
